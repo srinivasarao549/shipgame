@@ -1,13 +1,21 @@
 (function( $ ){
 	
 	var game = {
-			grid : []
+			grid : [],
+			cache : {}
 		},
 		defaults = {
 			rows : 10,
-			columns : 15,
-			cellSize : 20
+			columns : 15
 		};
+		
+	function $cached(selector){
+		if (typeof game.cache[selector] === 'undefined'){
+			game.cache[selector] = $(selector);
+		}
+		
+		return game.cache[selector];
+	}
 	
 	// Adapted from the book, "JavaScript Patterns" by Stoyan Stefanov
 	function extend(child, parent, doOverwrite){
@@ -40,11 +48,13 @@
 		this.addClass('grid');
 		
 		var x, y, row, column, cell,
-			self = this;
+			self = this,
+			hoveredColumn;
 		
 		this._params = {};
 		extend(this._params, defaults);
 		
+		// Highlight the current row/grid that is being hovered.
 		$('.cell', this).live('mouseover', function(ev){
 				var i, column, classes = $(ev.target).attr('class').split(' ');
 				
@@ -54,15 +64,15 @@
 					}
 				}
 				
-				// EXTREMELY INEFFICIENT.  CACHE THIS
-				$('.cell', self).removeClass('columnHover');
-				$('.' + column, self).addClass('columnHover');
+				hoveredColumn = column;
+				
+				$cached('.' + hoveredColumn).addClass('columnHover');
 				
 			}).live('mouseout', function(){
-				
+				$cached('.' + hoveredColumn).removeClass('columnHover');
 			});
 		
-		// Set up the grid
+		// Build the grid
 		for (y = 0; y < this._params.rows; y++){
 			
 			if (typeof game.grid[y] === 'undefined'){
