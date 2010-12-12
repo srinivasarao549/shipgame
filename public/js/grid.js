@@ -49,14 +49,23 @@
 		
 		var x, y, row, column, cell,
 			self = this,
-			hoveredColumn;
+			hoveredColumn,
+			lastHovered;
 		
 		this._params = {};
 		extend(this._params, defaults);
 		
 		// Highlight the current row/grid that is being hovered.
 		$('.cell', this).live('mouseover', function(ev){
-				var i, column, classes = $(ev.target).attr('class').split(' ');
+				var i, column, 
+					currentTarget = $(ev.currentTarget),
+					classes = currentTarget.attr('class').split(' ');
+					
+				lastHovered = currentTarget;
+				//currentTarget[0].svg.circle(15, 15, 15);
+				
+				// Dun' work
+				//currentTarget[0].svg.path('M0 ' + currentTarget.width() + 'L0 ' + currentTarget.height());
 				
 				for (i = 0; i < classes.length; i++){
 					if (/column_/.test(classes[i])){
@@ -69,6 +78,7 @@
 				$cached('.' + hoveredColumn).addClass('columnHover');
 				
 			}).live('mouseout', function(){
+				lastHovered[0].svg.clear();
 				$cached('.' + hoveredColumn).removeClass('columnHover');
 			});
 		
@@ -80,8 +90,9 @@
 			}
 			
 			row = $('<div>', {
-				'class': 'row ' + y
-			});
+					'class': 'row ' + y
+				})
+				.appendTo(this);
 			
 			for (x = 0; x < this._params.columns; x++){
 				if (typeof game.grid[y][x] === 'undefined'){
@@ -90,11 +101,13 @@
 					});
 					
 					row.append(cell);
+					cell[0].svg = Raphael(cell[0], cell.width(), cell.height(), {
+							stroke: '#f0f'
+						});
+					//console.log(cell.svg)
 					game.grid[y][x] = cell;
 				}
 			}
-			
-			this.append(row);
 		}
 		
 		return this;
