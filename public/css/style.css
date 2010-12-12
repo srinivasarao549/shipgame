@@ -6,3 +6,30 @@ html{
 body{
 	background: #eee;
 }
+
+.grid{
+	border-top: solid 1px #000;
+	border-left: solid 1px #000;
+	float: left;
+}
+
+.cell{
+	border-bottom: solid 1px #000;
+	border-right: solid 1px #000;
+	float: left;
+	height: 30px;
+	width: 30px;
+}
+
+.row:hover, .columnHover{
+	background: #bbb;
+}
+
+.cell:hover{
+	background: yellow;
+}
+
+.row{
+	display: block;
+	overflow: auto;
+}
