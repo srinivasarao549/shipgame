@@ -1,6 +1,6 @@
 (function( $ ){
 
-	$.fn.shipgame = function(options) {	
+	$.fn.shipgame = function(params) {	
 		console.log('Welcome!');
 	};
 	
