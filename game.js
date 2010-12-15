@@ -1,85 +1,92 @@
 var _ = require('underscore').noConflict();
 
 var Game = {
-  init: function() {
-    Game.grid = new Grid();
-    Game.names_to_players = {};
-    Game.clients_to_players = {};
-  },
+	init: function() {
+		Game.grid = new Grid();
+		Game.namesToPlayers = {};
+		Game.clientsToPlayers = {};
+	},
 
-  validate_user:  function(user, pass) {
-    if (Games.names_to_players[user]) return {user:user, pass:pass};
-    else Game.validate_user(user+"1", pass);
-  },
+	validate_user:  function(user, pass) {
+		if (Games.namesToPlayers[user]) {
+			return {user:user, pass:pass};
+		} else {
+			Game.validateUser(user+"1", pass);
+		}
+	},
 
-  new_user: function(user, pass) {
-    var thin_user = validate_user(user, pass);
-    Game.names_to_players[thin_user.user] = new Player(thin_user.user, thin_user.pass, Util.get_id());
-  },
+	new_user: function(name, pass) {
+		var user = validateUser(name, pass);
+		Game.namesToPlayers[user.name] = new Player(user.name, user.pass, Util.getId());
+	},
 
-  // TODO: Oh snap this ain't done!
-  place_ship: function(grid, ship, put_back) {
-    put_back = put_back || [];
-    var head = Grid.get_open_head();
-    var valid = true;
-    var oriention = Math.random(2);
-    
-    var step = oriention == 1? 1:Grid.size;
-    for(var i=1;i<ship.size;i++) {
-      var index = i*step+head;
-      if(!grid.get_cell(index).isEmpty()) {
-        valid = false;
-        break;
-      }
-    }
-    
-    if(valid) {
-      for(var i = 0; i < ship.size; i++) {
-        var htoci = i*step+head;
-        var open_index = grid._heads_to_cells[htoci];
-        delete grid._heads_to_cells[htoci];
-        var cell = grid._open_heads.splice(open_index, 1);
-        cell.belongs_to = ship.id;
-        //add to some notification thing to update
-      }
-    } else {
-      put_back.push(head);
-      Game.place_ship(grid, ship, put_back);
-    }
-  },
+	// TODO: Oh snap this ain't done!
+	place_ship: function(grid, ship, putBack) {
+		putBack = putBack || [];
+		var head = Grid.getOpenHead();
+		var valid = true;
+		var oriention = Math.random(2);
+		var step = oriention == 1? 1:Grid.size;
+
+		for(var i=1;i<ship.size;i++) {
+			var index = i*step+head;
+			if(!grid.cells[index].isEmpty()) {
+				valid = false;
+				break;
+			}
+		}
+
+		if(valid) {
+			for(var i = 0; i < ship.size; i++) {
+				var htoci = i*step+head;
+				var open_index = grid.headsToCells[htoci];
+				delete grid.headsToCells[htoci];
+				var cell = grid.openHeads.splice(open_index, 1);
+				cell.belongs_to = ship.id;
+				//add to some notification thing to update
+			 }
+		} else {
+			putBack.push(head);
+			Game.place_ship(grid, ship, putBack);
+		}
+	},
 };
 
-var Grid = function(size){
-  var self = this;
-  this._cells = _.range(size*size);
-  this._open_heads = Util.shuffle(_.range(size*size));
-  this._heads_to_cells = {};
-  _.each(this._open_heads, function(head, i) {
-    self._heads_to_cells[head] = i;
-  });
-  this.size = size;
+var Grid = function(size) {
+	var self = this;
+	var length = size*size;
+	this.cells = _.range(length);
+	this.openHeads = Util.shuffle(_.range(length));
+	this.headsToCells = {};
+	_.each(this.openHeads, function(head, i) {
+			self.headsToCells[head] = i;
+	});
+	this.size = size;
 
-  this.get_cell = function(i) {
-    return this._cells[i];
-  }
+	this.get_cell = function(i) {
+		return this.cells[i];
+	}
 
-  this.get_open_head = function() {
-    return this._open_heads.pop();
-  }
+	this.getOpenHead = function() {
+		return this.openHeads.pop();
+	}
 };
 
-var Player = function(user, pass, id){
-  this.user = user;
-  this.pass = pass;
-  this.id = id;
-  
-  this.ships = [
-    
-  ];
+var Cell = function() {
+	kkkkk
+
+var Player = function(name, pass, id){
+	this.name = name;
+	this.pass = pass;
+	this.id = id;
+
+	this.ships = [
+
+	];
 };
 
 var Ship = function(size){
-  this.size = size;
-  this.orientation = null;
-  this.head = null;
+	this.size = size;
+	this.orientation = null;
+	this.head = null;
 };
